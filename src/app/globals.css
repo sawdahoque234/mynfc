@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-white;
+}
+
+input[type="text"],
+textarea {
+  @apply bg-gray-100 w-full block py-2 px-2 mb-2;
+}
+label.input-label {
+  @apply uppercase text-gray-400 text-xs mb-2 font-semibold;
+}
+
+.radio-togglers {
+  @apply p-1 bg-gray-200 inline-flex cursor-pointer;
+}
+.radio-togglers div {
+  @apply p-2 px-4 text-gray-500 block flex items-center gap-2 cursor-pointer;
+}
+.radio-togglers input[type="radio"] {
+  @apply hidden;
+}
+.radio-togglers input[type="radio"]:checked + div {
+  @apply bg-white text-blue-600;
+}
+
+.sortable-ghost {
+  opacity: 0.2;
+}
+
+input#navCb:checked ~ aside {
+  left: 0;
+}
+input#navCb:checked ~ .backdrop {
+  display: block;
+}
+/* LoadingSpinner.css */
+.loading-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Adjust based on where you're using the spinner */
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: #09f;
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.mobile-container {
+  width: 300px;
+  height: 600px;
+  border-radius: 40px;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  margin: 0 auto;
+}
+
+.mobile-header {
+  text-align: center;
+}
+
+.profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border: 2px solid white;
+}
+
+.mobile-header h2 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+}
+
+.mobile-header p {
+  font-size: 0.9rem;
+  color: white;
+}
+
+.mobile-body {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.connect-btn {
+  background-color: white;
+  color: #ff6363;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.connect-btn:hover {
+  background-color: #ffd1d1;
+}
+
+.links-section {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.links-section h3 {
+  font-size: 1rem;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.links-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.links-section ul li {
+  margin-bottom: 10px;
+}
+
+.links-section ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.links-section ul li a:hover {
+  text-decoration: underline;
+}
