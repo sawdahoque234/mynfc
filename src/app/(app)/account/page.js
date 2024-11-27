@@ -13,7 +13,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEnvelope} from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import {FaGlobe} from "react-icons/fa";
-import AppHeader from "@/components/layout/AppHeader";
+import ProcessedToPrint from "@/components/buttons/PrceedToPrint";
 
 export const metadata = {
   title: "MyNFC | account",
@@ -101,7 +101,7 @@ export default async function AccountPage({searchParams}) {
                   <button className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold py-2 rounded-full shadow-md">Connect with Me</button>
 
                   {/* Links Section */}
-                  <div className={`mt-6 px-2 ${leanPage.links?.length <= 2 ? "my-24" : "my-10"}`}>
+                  <div className={`mt-6 px-2 ${leanPage.links?.length <= 2 ? "my-12" : "my-10"}`}>
                     <ul
                       className={`${leanPage.links?.length <= 2 ? "space-y-6" : "space-y-4"}`}
                       style={{
@@ -124,7 +124,11 @@ export default async function AccountPage({searchParams}) {
                     <div className="flex flex-wrap justify-center">
                       {buttonsArray.map((button) => (
                         <span key={button.key} className="flex mr-3 mb-4 flex-wrap justify-center">
-                          <a href={button.url} target="_blank" rel="noopener noreferrer" className="flex">
+                          <a
+                            href={button.key === "email" ? `mailto:${button.url.replace(/^mailto:/, "")}` : button.url} // Use mailto for email
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex">
                             <FontAwesomeIcon icon={button.icon} size="lg" style={{color: button.color}} className="text-black w-10 h-10" />
                           </a>
                         </span>
@@ -135,9 +139,10 @@ export default async function AccountPage({searchParams}) {
               </div>
             </div>
             <div className="pt-8 border bg-white border-gray-200 shadow-lg rounded-lg order-2 md:order-1">
-              <AppHeader />
               <PageLinksForm page={leanPage} user={session.user} />
               <PageButtonsForm page={leanPage} user={session.user} />
+              {/* Conditionally show ProcessedToPrint */}
+              {(buttonsArray.length > 0 || (leanPage.links && leanPage.links.length > 0)) && <ProcessedToPrint />}
             </div>
           </div>
         </>

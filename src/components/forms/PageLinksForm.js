@@ -9,11 +9,13 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSave} from "@fortawesome/free-solid-svg-icons";
 import {useState} from "react";
 import toast from "react-hot-toast";
+import {useRouter} from "next/navigation"; // Import useRouter
 
 export default function PageLinksForm({page}) {
   const [links, setLinks] = useState(page.links || []);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [urlErrors, setUrlErrors] = useState({});
+  const router = useRouter(); // Initialize useRouter
 
   function validateLinks(linkList) {
     const errors = {};
@@ -59,6 +61,9 @@ export default function PageLinksForm({page}) {
       setUrlErrors({});
       setHasUnsavedChanges(false);
       toast.success("Links saved successfully!");
+
+      // Refresh the page
+      router.refresh(); // Trigger full page refresh
     } catch (error) {
       toast.error("Failed to save links.");
       console.error(error);
@@ -96,6 +101,8 @@ export default function PageLinksForm({page}) {
     savePageLinks(updatedLinks)
       .then(() => {
         toast.success("Link removed successfully!");
+        // Refresh the page after deletion
+        router.refresh();
       })
       .catch((err) => {
         toast.error("Failed to remove link from the database.");

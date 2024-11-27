@@ -11,6 +11,7 @@ import {FiTrash2} from "react-icons/fi"; // Trash icon
 import {AiOutlinePlus} from "react-icons/ai"; // Plus icon
 import toast from "react-hot-toast";
 import {CiCirclePlus} from "react-icons/ci";
+import {useRouter} from "next/navigation"; // Import useRouter
 
 export const allButtons = [
   {
@@ -116,12 +117,19 @@ function upperFirst(str) {
 }
 
 export default function PageButtonsForm({user, page}) {
+  const router = useRouter(); // Initialize router
+
   const pageSavedButtonsKeys = page?.buttons ? Object.keys(page.buttons) : [];
   const pageSavedButtonsInfo = pageSavedButtonsKeys.map((k) => allButtons.find((b) => b.key === k));
   const [activeButtons, setActiveButtons] = useState(pageSavedButtonsInfo);
 
   function addButtonToProfile(button) {
-    setActiveButtons((prevButtons) => [...prevButtons, button]);
+    setActiveButtons((prevButtons) => {
+      const updatedButtons = [...prevButtons, button];
+      // Refresh the page after adding a new button
+      router.refresh();
+      return updatedButtons;
+    });
   }
 
   async function removeButton(button) {
@@ -136,33 +144,35 @@ export default function PageButtonsForm({user, page}) {
     try {
       await savePageButtons(formData); // Save to the database
       toast.success("Removed successfully!");
+      // Trigger page refresh after removal
+      router.refresh();
     } catch (error) {
       toast.error("Failed to save changes to the database.");
     }
   }
 
   function handleInputChange(event, buttonKey) {
-    const value = event.target.value;
-    let formattedValue = value.trim(); // Trim extra spaces
+    let value = event.target.value.trim(); // Trim extra spaces
 
-    if (buttonKey === "whatsapp") {
-      if (!formattedValue.startsWith("https://wa.me/")) {
-        formattedValue = `https://wa.me/${formattedValue.replace(/\D/g, "")}`;
-      }
-    } else if (buttonKey === "telegram") {
-      if (!formattedValue.startsWith("https://t.me/")) {
-        formattedValue = `https://t.me/${formattedValue}`;
-      }
-    } else if (buttonKey === "email") {
-      // Email validation
-      if (!formattedValue.includes("@")) {
-        event.target.setCustomValidity("Please enter a valid email address.");
-      } else {
-        event.target.setCustomValidity(""); // Clear validation error
-      }
+    if (buttonKey === "whatsapp" || buttonKey === "telegram") {
+      // Allow only numeric input
+      value = value.replace(/\D/g, ""); // Remove any non-digit characters
     }
 
-    event.target.value = formattedValue; // Update the input value dynamically
+    const button = allButtons.find((b) => b.key === buttonKey);
+    if (!button) return; // Exit if button is not found
+
+    let formattedValue = value;
+
+    // Custom formatting for specific keys
+    if (buttonKey === "whatsapp") {
+      formattedValue = `https://wa.me/${value}`;
+    } else if (buttonKey === "telegram") {
+      formattedValue = `https://t.me/${value}`;
+    }
+
+    // Update the input value dynamically
+    event.target.value = formattedValue;
   }
 
   function validateFormData(formData) {
@@ -190,6 +200,8 @@ export default function PageButtonsForm({user, page}) {
     }
     await savePageButtons(formData);
     toast.success("Social Profile saved!");
+    // Trigger a refresh after saving the buttons
+    router.refresh();
   }
 
   const availableButtons = allButtons.filter((b1) => !activeButtons.find((b2) => b1.key === b2.key));
@@ -210,7 +222,7 @@ export default function PageButtonsForm({user, page}) {
               <span>{upperFirst(b.label)}:</span>
             </div>
             <div className="grow flex">
-              <input placeholder={b.placeholder} name={b.key} defaultValue={page.buttons?.[b.key]} type="text" className="grow border px-2 py-1 rounded" onChange={(e) => handleInputChange(e, b.key)} style={{marginBottom: "0"}} />
+              <input required placeholder={b.placeholder} name={b.key} defaultValue={page.buttons?.[b.key]} type="text" className="grow border px-2 py-1 rounded" onChange={(e) => handleInputChange(e, b.key)} style={{marginBottom: "0"}} />
               <button onClick={() => removeButton(b)} type="button" className="py-2 px-4 flex items-center justify-center rounded hover:text-red-500">
                 <FiTrash2 size={25} />
               </button>

@@ -1,10 +1,10 @@
 import {model, models, Schema} from "mongoose";
 
 const UserSchema = new Schema({
-  name: String,
-  email: String,
-  image: String,
+  name: {type: String, default: ""},
+  email: {type: String, default: ""},
+  image: {type: String, default: ""},
   emailVerified: Date,
 });
 
-export const User = models?.User || model('User', UserSchema);
+export const User = models?.User || model("User", UserSchema);
